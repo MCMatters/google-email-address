@@ -1,0 +1,13 @@
+language: php
+
+php:
+  - '7.3'
+
+install: composer install --no-interaction --no-suggest --no-progress --optimize-autoloader
+
+script: vendor/bin/phpunit
+
+notifications:
+  email:
+    on_success: never
+    on_failure: always
