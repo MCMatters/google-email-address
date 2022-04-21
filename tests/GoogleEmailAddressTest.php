@@ -7,7 +7,9 @@ namespace McMatters\GoogleEmailAddress\Tests;
 use McMatters\GoogleEmailAddress\GoogleEmailAddress;
 use PHPUnit\Framework\TestCase;
 
-use const false, null, true;
+use const false;
+use const null;
+use const true;
 
 /**
  * Class GoogleEmailAddressTest
@@ -21,34 +23,29 @@ class GoogleEmailAddressTest extends TestCase
      */
     protected $emails = [
         'd.borzyonok@amgrade.com' => [
-            'is_google' => false,
-            'mx' => false,
+            'is_google' => true,
+            'mx' => true,
             'normalized' => 'd.borzyonok@amgrade.com',
         ],
-        'd.borzyonok@amgrade.org' => [
-            'is_google' => true,
-            'mx' => true,
-            'normalized' => 'd.borzyonok@amgrade.org',
+        'd.borzyonok+foobar@amgra.de' => [
+            'is_google' => false,
+            'mx' => false,
+            'normalized' => 'd.borzyonok+foobar@amgra.de',
         ],
         'd.borzyonok+foobar@amgrade.com' => [
-            'is_google' => false,
-            'mx' => false,
-            'normalized' => 'd.borzyonok+foobar@amgrade.com',
-        ],
-        'd.borzyonok+foobar@amgrade.org' => [
             'is_google' => true,
             'mx' => true,
-            'normalized' => 'd.borzyonok@amgrade.org',
+            'normalized' => 'd.borzyonok@amgrade.com',
+        ],
+        'd.borzyonok+1@amgra.de' => [
+            'is_google' => false,
+            'mx' => false,
+            'normalized' => 'd.borzyonok+1@amgra.de',
         ],
         'd.borzyonok+1@amgrade.com' => [
-            'is_google' => false,
-            'mx' => false,
-            'normalized' => 'd.borzyonok+1@amgrade.com',
-        ],
-        'd.borzyonok+1@amgrade.org' => [
             'is_google' => true,
             'mx' => true,
-            'normalized' => 'd.borzyonok@amgrade.org',
+            'normalized' => 'd.borzyonok@amgrade.com',
         ],
         'dima.matters@gmail.com' => [
             'is_google' => true,
@@ -112,7 +109,7 @@ class GoogleEmailAddressTest extends TestCase
      *
      * @param string|null $name
      * @param array $data
-     * @param string $dataName
+     * @param int|string $dataName
      */
     public function __construct(
         ?string $name = null,

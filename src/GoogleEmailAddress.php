@@ -4,10 +4,19 @@ declare(strict_types=1);
 
 namespace McMatters\GoogleEmailAddress;
 
-use function array_map, count, explode, filter_var, getmxrr, implode, in_array,
-    preg_match, preg_quote, str_replace, substr;
+use function count;
+use function explode;
+use function filter_var;
+use function getmxrr;
+use function implode;
+use function in_array;
+use function preg_match;
+use function str_replace;
+use function substr;
 
-use const false, null, true, FILTER_VALIDATE_EMAIL;
+use const false;
+use const FILTER_VALIDATE_EMAIL;
+use const true;
 
 /**
  * Class GoogleEmailAddress
@@ -16,14 +25,6 @@ use const false, null, true, FILTER_VALIDATE_EMAIL;
  */
 class GoogleEmailAddress
 {
-    /**
-     * @var array
-     */
-    protected $googleAddresses = [
-        'gmail.com',
-        'googlemail.com',
-    ];
-
     /**
      * @param string $email
      * @param bool $checkMXRecords
@@ -34,21 +35,11 @@ class GoogleEmailAddress
         string $email,
         bool $checkMXRecords = false
     ): bool {
-        static $regex;
-
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             return false;
         }
 
-        if (null === $regex) {
-            $regex = implode('|', array_map(static function (string $host) {
-                return preg_quote($host, '.');
-            }, $this->googleAddresses));
-
-            $regex = "/@({$regex})$/i";
-        }
-
-        if (preg_match($regex, $email)) {
+        if (preg_match('/@g(?:oogle)?mail\.com$/i', $email)) {
             return true;
         }
 
@@ -72,9 +63,9 @@ class GoogleEmailAddress
     /**
      * @param string $email
      *
-     * @return string|null
+     * @return string
      */
-    public function normalize(string $email): ?string
+    public function normalize(string $email): string
     {
         $mxRecords = false;
 
@@ -87,13 +78,15 @@ class GoogleEmailAddress
         }
 
         $parts = explode('@', $email);
+        $countParts = count($parts);
 
-        if (count($parts) < 2) {
-            return null;
+        if ($countParts < 2) {
+            return $email;
         }
 
-        $hostKey = count($parts) - 1;
+        $hostKey = $countParts - 1;
         $host = $parts[$hostKey];
+
         unset($parts[$hostKey]);
 
         $name = implode('@', $parts);
